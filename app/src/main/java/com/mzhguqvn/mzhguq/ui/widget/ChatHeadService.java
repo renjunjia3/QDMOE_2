@@ -93,19 +93,6 @@ public class ChatHeadService extends Service {
 
             }
         });
-        try {
-            String jsonStr = SharedPreferencesUtil.getString(ChatHeadService.this, "NOTIFY_DATA", "");
-            VipInfo vipInfo = JSON.parseObject(jsonStr, VipInfo.class);
-            for (int i = 0; i < vipInfo.getOther().size(); i++) {
-                for (int j = 0; j < vipInfo.getOther().get(i).getData().size(); j++) {
-                    VideoInfo videoInfo2 = vipInfo.getOther().get(i).getData().get(j);
-                    videoInfo2.setTilteType(false);
-                    list.add(videoInfo2);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         new Timer().schedule(timerTask, 1 * 60 * 1000, 1 * 60 * 1000);
     }
@@ -131,10 +118,26 @@ public class ChatHeadService extends Service {
                     if (exitTime == 0) {
                         exitTime = System.currentTimeMillis();
                     } else {
+                        if (list.size() <= 0) {
+                            try {
+                                String jsonStr = SharedPreferencesUtil.getString(ChatHeadService.this, "NOTIFY_DATA", "");
+                                VipInfo vipInfo = JSON.parseObject(jsonStr, VipInfo.class);
+                                for (int i = 0; i < vipInfo.getOther().size(); i++) {
+                                    for (int j = 0; j < vipInfo.getOther().get(i).getData().size(); j++) {
+                                        VideoInfo videoInfo2 = vipInfo.getOther().get(i).getData().get(j);
+                                        videoInfo2.setTilteType(false);
+                                        list.add(videoInfo2);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         if (count == 0) {
                             //第一次是5分钟提示
                             if (System.currentTimeMillis() - exitTime > 5 * 60 * 1000) {
-                                if (!viewIsadded && list != null && list.size() > 0) {
+                                if (!viewIsadded && list.size() > 0) {
                                     title.setText(list.get(count % list.size()).getTitle());
                                     Glide.with(ChatHeadService.this).load(list.get(count % list.size()).getThumb()).asBitmap().centerCrop().into(image);
                                     windowManager.addView(chatHead, params);
@@ -143,7 +146,6 @@ public class ChatHeadService extends Service {
                                     exitTime = 0;
                                     boolean success = ShortcutBadger.applyCount(ChatHeadService.this, 1);
                                     if (!success) {
-                                        removeBadge();
                                         setBadgeOfMIUI(ChatHeadService.this, 1);
                                     }
                                 }
@@ -160,7 +162,6 @@ public class ChatHeadService extends Service {
                                     exitTime = 0;
                                     boolean success = ShortcutBadger.applyCount(ChatHeadService.this, 1);
                                     if (!success) {
-                                        removeBadge();
                                         setBadgeOfMIUI(ChatHeadService.this, 1);
                                     }
                                 }

@@ -673,6 +673,7 @@ public class MainActivity extends SupportActivity {
         }
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        fileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/NNY_1001.apk";
         intent.setDataAndType(Uri.parse("file://" + fileName), "application/vnd.android.package-archive");
         mContext.startActivity(intent);
     }

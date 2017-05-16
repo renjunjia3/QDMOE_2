@@ -40,6 +40,7 @@ public class LuncherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //解决重复启动的问题
         if((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0){
             finish();
             return;
@@ -84,6 +85,7 @@ public class LuncherActivity extends AppCompatActivity {
             ToastUtils.getInstance(LuncherActivity.this).showToast("请检查网络连接");
             finish();
             return;
+            
         }
 
         retryTime++;
